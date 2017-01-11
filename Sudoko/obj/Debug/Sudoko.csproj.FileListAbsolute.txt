@@ -1,0 +1,13 @@
+D:\Mata\WpfLearning\Sudoko\Sudoko\bin\Debug\Sudoko.exe
+D:\Mata\WpfLearning\Sudoko\Sudoko\bin\Debug\Sudoko.pdb
+D:\Mata\WpfLearning\Sudoko\Sudoko\obj\Debug\Sudoko.csprojResolveAssemblyReference.cache
+D:\Mata\WpfLearning\Sudoko\Sudoko\obj\Debug\Sudoko.exe
+D:\Mata\WpfLearning\Sudoko\Sudoko\obj\Debug\Sudoko.pdb
+D:\Mata\WpfLearning\Sudoko\Sudoko\bin\Debug\Newtonsoft.Json.dll
+D:\Mata\WpfLearning\Sudoko\Sudoko\bin\Debug\Newtonsoft.Json.xml
+D:\Mata\WpfLearning\Sudoko\Sudoko\bin\Debug\hard.txt
+D:\Mata\WpfLearning\Sudoko\Sudoko\bin\Debug\easy.txt
+D:\Mata\WpfLearning\Sudoko\Sudoko\bin\Debug\medium.txt
+D:\Mata\WpfLearning\Sudoko\Sudoko\bin\Debug\evil.txt
+C:\Users\mcha13\Source\Repos\sudoku\Sudoko\obj\Debug\Sudoko.exe
+C:\Users\mcha13\Source\Repos\sudoku\Sudoko\obj\Debug\Sudoko.pdb
