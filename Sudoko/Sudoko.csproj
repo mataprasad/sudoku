@@ -65,6 +65,7 @@
     <Content Include="hard.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="load from web.txt" />
     <Content Include="medium.png" />
     <Content Include="medium.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
