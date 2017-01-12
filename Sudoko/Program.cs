@@ -9,7 +9,7 @@ namespace Sudoko
         public static void Main(string[] args)
         {            
             var input = new int[9, 9];
-            input = JsonConvert.DeserializeObject<int[,]>(File.ReadAllText("medium.txt"));
+            input = JsonConvert.DeserializeObject<int[,]>(File.ReadAllText("hard.txt"));
             var s = new Sudoku(input);
             s.PrintToConsole();
             s.Solve();

@@ -9,7 +9,7 @@ namespace Sudoko
 {
     public class Sudoku
     {
-        private readonly int[] _1_9 = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        private static readonly int[] _1_9 = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         private SudokuCell[] data = new SudokuCell[81];
 
         public Sudoku(int[,] obj)
@@ -53,12 +53,12 @@ namespace Sudoko
         public void Solve()
         {
             List<int> remainingNumbers = null;
-            List<int> allNoOfBox = null;
+            List<int> allNoInBox = null;
             List<int> possibleValues = null;
             int zero_count = data.Where(P => !P.IsFilled).Count();
             int previousCount = zero_count;
-            int break_x = 0;
-            int break_y = 1;
+            int break_x = 8;
+            int break_y = 2;
             while (zero_count > 0)
             {
                 foreach (var item in data.Where(P => !P.IsFilled))
@@ -66,19 +66,19 @@ namespace Sudoko
                     if (item.XIndex == break_x && item.YIndex == break_y)
                     {
                         remainingNumbers = null;
-                        allNoOfBox = null;
+                        allNoInBox = null;
                     }
                     remainingNumbers = null;
-                    allNoOfBox = null;
+                    allNoInBox = null;
 
-                    allNoOfBox = GetAllNoOfBox(item);
-                    remainingNumbers = _1_9.Except(allNoOfBox).ToList();
+                    allNoInBox = GetAllNosInBox(item);
+                    remainingNumbers = _1_9.Except(allNoInBox).ToList();
 
                     possibleValues = new List<int>();
 
                     foreach (var x in remainingNumbers)
                     {
-                        if (!IsInRow(x, item) && !IsInColumn(x, item) && !IsInBox(x, item, allNoOfBox))
+                        if (!IsInRow(x, item) && !IsInColumn(x, item) && !IsInBox(x, item, allNoInBox))
                         {
                             possibleValues.Add(x);
                             if (possibleValues.Count > 1)
@@ -92,7 +92,7 @@ namespace Sudoko
                         possibleValues = new List<int>();
                         foreach (var x in remainingNumbers)
                         {
-                            if (IsInAdjacentCells(x, item) && !IsInRow(x, item) && !IsInColumn(x, item) && !IsInBox(x, item, allNoOfBox))
+                            if (IsInAdjacentCells(x, item) && !IsInRow(x, item) && !IsInColumn(x, item) && !IsInBox(x, item, allNoInBox))
                             {
                                 possibleValues.Add(x);
                                 if (possibleValues.Count > 1)
@@ -141,23 +141,25 @@ namespace Sudoko
             var rowCheck = true;
             var colCheck = true;
 
+            //for testing
             if (item.XIndex == 1 && item.YIndex == 3)
             {
                 result = true;
-                //var a1 = data.Where(P => P.XIndex == item.XIndex && getAdjacentColumns.Contains(P.YIndex)).ToList();
-                //var a2 = data.Where(P => P.YIndex == item.YIndex && getAdjacentRows.Contains(P.XIndex)).ToList();
             }
 
-            //getAdjacentColumns = data.Where(P => P.XIndex == item.XIndex && getAdjacentColumns.Contains(P.YIndex) && P.Value == 0).Select(P => P.YIndex).ToList();
-            //getAdjacentRows = data.Where(P => P.YIndex == item.YIndex && getAdjacentRows.Contains(P.XIndex) && P.Value == 0).Select(P => P.XIndex).ToList();
+            getAdjacentColumns = data.Where(P => P.XIndex == item.XIndex && getAdjacentColumns.Contains(P.YIndex) && P.Value == 0 && P.BoxNo==item.BoxNo).Select(P => P.YIndex).ToList();
+            getAdjacentRows = data.Where(P => P.YIndex == item.YIndex && getAdjacentRows.Contains(P.XIndex) && P.Value == 0 && P.BoxNo==item.BoxNo).Select(P => P.XIndex).ToList();
 
             for (int i = 0; i < getAdjacentRows.Count; i++)
             {
                 if (data.Where(P => P.XIndex == getAdjacentRows[i] && P.Value == x).FirstOrDefault() == null)
                 {
-                    rowCheck = false;
-                    result = false;
-                    break;
+                    //if (data.Where(P => P.XIndex == getAdjacentRows[i] && P.BoxNo == item.BoxNo).Count() < 3)
+                    {
+                        rowCheck = false;
+                        result = false;
+                        break;
+                    }
                 }
             }
 
@@ -165,9 +167,12 @@ namespace Sudoko
             {
                 if (data.Where(P => P.YIndex == getAdjacentColumns[i] && P.Value == x).FirstOrDefault() == null)
                 {
-                    colCheck = false;
-                    result = false;
-                    break;
+                    //if (data.Where(P => P.YIndex == getAdjacentColumns[i] && P.BoxNo == item.BoxNo).Count() < 3)
+                    {
+                        colCheck = false;
+                        result = false;
+                        break;
+                    }
                 }
             }
 
@@ -262,7 +267,7 @@ namespace Sudoko
             return result;
         }
 
-        private List<int> GetAllNoOfBox(SudokuCell cell)
+        private List<int> GetAllNosInBox(SudokuCell cell)
         {
             List<int> result = new List<int>();
             foreach (var item in GetIndexForAllNoOfBox(cell))
@@ -426,6 +431,50 @@ namespace Sudoko
             get
             {
                 return Value > 0;
+            }
+        }
+        public int BoxNo
+        {
+            get
+            {
+                var result = 0;
+                if ("012".Contains(this.XIndex.ToString()) && "012".Contains(this.YIndex.ToString()))
+                {
+                    result = 0;
+                }
+                if ("012".Contains(this.XIndex.ToString()) && "345".Contains(this.YIndex.ToString()))
+                {
+                    result = 1;
+                }
+                if ("012".Contains(this.XIndex.ToString()) && "678".Contains(this.YIndex.ToString()))
+                {
+                    result = 2;
+                }
+                if ("345".Contains(this.XIndex.ToString()) && "012".Contains(this.YIndex.ToString()))
+                {
+                    result = 3;
+                }
+                if ("345".Contains(this.XIndex.ToString()) && "345".Contains(this.YIndex.ToString()))
+                {
+                    result = 4;
+                }
+                if ("345".Contains(this.XIndex.ToString()) && "678".Contains(this.YIndex.ToString()))
+                {
+                    result = 5;
+                }
+                if ("678".Contains(this.XIndex.ToString()) && "012".Contains(this.YIndex.ToString()))
+                {
+                    result = 6;
+                }
+                if ("678".Contains(this.XIndex.ToString()) && "345".Contains(this.YIndex.ToString()))
+                {
+                    result = 7;
+                }
+                if ("678".Contains(this.XIndex.ToString()) && "678".Contains(this.YIndex.ToString()))
+                {
+                    result = 8;
+                }
+                return result;
             }
         }
         public int Value { get; set; }
