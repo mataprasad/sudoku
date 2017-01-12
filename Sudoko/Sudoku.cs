@@ -22,7 +22,7 @@ namespace Sudoko
                 }
             }
         }
-        
+
         public void PrintToConsole()
         {
             Console.WriteLine();
@@ -57,8 +57,8 @@ namespace Sudoko
             List<int> possibleValues = null;
             int zero_count = data.Where(P => !P.IsFilled).Count();
             int previousCount = zero_count;
-            int break_x = 7;
-            int break_y = 7;
+            int break_x = 0;
+            int break_y = 1;
             while (zero_count > 0)
             {
                 foreach (var item in data.Where(P => !P.IsFilled))
@@ -84,6 +84,21 @@ namespace Sudoko
                             if (possibleValues.Count > 1)
                             {
                                 break;
+                            }
+                        }
+                    }
+                    if (possibleValues.Count != 1)
+                    {
+                        possibleValues = new List<int>();
+                        foreach (var x in remainingNumbers)
+                        {
+                            if (IsInAdjacentCells(x, item) && !IsInRow(x, item) && !IsInColumn(x, item) && !IsInBox(x, item, allNoOfBox))
+                            {
+                                possibleValues.Add(x);
+                                if (possibleValues.Count > 1)
+                                {
+                                    break;
+                                }
                             }
                         }
                     }
@@ -118,12 +133,141 @@ namespace Sudoko
             return allNoOfBox.Contains(x);
         }
 
+        private bool IsInAdjacentCells(int x, SudokuCell item)
+        {
+            var result = true;
+            var getAdjacentRows = GetAdjacentRows(item.XIndex);
+            var getAdjacentColumns = GetAdjacentColumns(item.YIndex);
+            var rowCheck = true;
+            var colCheck = true;
+
+            if (item.XIndex == 1 && item.YIndex == 3)
+            {
+                result = true;
+                //var a1 = data.Where(P => P.XIndex == item.XIndex && getAdjacentColumns.Contains(P.YIndex)).ToList();
+                //var a2 = data.Where(P => P.YIndex == item.YIndex && getAdjacentRows.Contains(P.XIndex)).ToList();
+            }
+
+            //getAdjacentColumns = data.Where(P => P.XIndex == item.XIndex && getAdjacentColumns.Contains(P.YIndex) && P.Value == 0).Select(P => P.YIndex).ToList();
+            //getAdjacentRows = data.Where(P => P.YIndex == item.YIndex && getAdjacentRows.Contains(P.XIndex) && P.Value == 0).Select(P => P.XIndex).ToList();
+
+            for (int i = 0; i < getAdjacentRows.Count; i++)
+            {
+                if (data.Where(P => P.XIndex == getAdjacentRows[i] && P.Value == x).FirstOrDefault() == null)
+                {
+                    rowCheck = false;
+                    result = false;
+                    break;
+                }
+            }
+
+            for (int i = 0; i < getAdjacentColumns.Count; i++)
+            {
+                if (data.Where(P => P.YIndex == getAdjacentColumns[i] && P.Value == x).FirstOrDefault() == null)
+                {
+                    colCheck = false;
+                    result = false;
+                    break;
+                }
+            }
+
+            if (rowCheck)
+            {
+                result = true;
+                getAdjacentColumns = data.Where(P => P.XIndex == item.XIndex && getAdjacentColumns.Contains(P.YIndex) && P.Value == 0).Select(P => P.YIndex).ToList();
+                for (int i = 0; i < getAdjacentColumns.Count; i++)
+                {
+                    if (data.Where(P => P.YIndex == getAdjacentColumns[i] && P.Value == x).FirstOrDefault() == null)
+                    {
+                        result = false;
+                        break;
+                    }
+                }
+            }
+
+            if (colCheck)
+            {
+                result = true;
+                getAdjacentRows = data.Where(P => P.YIndex == item.YIndex && getAdjacentRows.Contains(P.XIndex) && P.Value == 0).Select(P => P.XIndex).ToList();
+                for (int i = 0; i < getAdjacentRows.Count; i++)
+                {
+                    if (data.Where(P => P.XIndex == getAdjacentRows[i] && P.Value == x).FirstOrDefault() == null)
+                    {
+                        result = false;
+                        break;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private List<int> GetAdjacentRows(int currentRowIndex)
+        {
+            List<int> result = new List<int>();
+            switch (currentRowIndex)
+            {
+                case 0:
+                case 3:
+                case 6:
+                    result.Add(currentRowIndex + 1);
+                    result.Add(currentRowIndex + 2);
+                    break;
+                case 1:
+                case 4:
+                case 7:
+                    result.Add(currentRowIndex - 1);
+                    result.Add(currentRowIndex + 1);
+                    break;
+                case 2:
+                case 5:
+                case 8:
+                    result.Add(currentRowIndex - 1);
+                    result.Add(currentRowIndex - 2);
+                    break;
+                default:
+                    break;
+            }
+
+            return result;
+        }
+
+        private List<int> GetAdjacentColumns(int currentColumnIndex)
+        {
+            List<int> result = new List<int>();
+            switch (currentColumnIndex)
+            {
+                case 0:
+                case 3:
+                case 6:
+                    result.Add(currentColumnIndex + 1);
+                    result.Add(currentColumnIndex + 2);
+                    break;
+                case 1:
+                case 4:
+                case 7:
+                    result.Add(currentColumnIndex - 1);
+                    result.Add(currentColumnIndex + 1);
+                    break;
+                case 2:
+                case 5:
+                case 8:
+                    result.Add(currentColumnIndex - 1);
+                    result.Add(currentColumnIndex - 2);
+                    break;
+                default:
+                    break;
+            }
+
+            return result;
+        }
+
         private List<int> GetAllNoOfBox(SudokuCell cell)
         {
             List<int> result = new List<int>();
             foreach (var item in GetIndexForAllNoOfBox(cell))
             {
-                if (data[item].Value != null)
+                if (data[item].Value != 0)
                     result.Add(data[item].Value);
             }
 
@@ -254,6 +398,7 @@ namespace Sudoko
 
             return result;
         }
+
     }
 
     public class SudokuCell
