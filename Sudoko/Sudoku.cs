@@ -147,8 +147,8 @@ namespace Sudoko
                 result = true;
             }
 
-            getAdjacentColumns = data.Where(P => P.XIndex == item.XIndex && getAdjacentColumns.Contains(P.YIndex) && P.Value == 0 && P.BoxNo==item.BoxNo).Select(P => P.YIndex).ToList();
-            getAdjacentRows = data.Where(P => P.YIndex == item.YIndex && getAdjacentRows.Contains(P.XIndex) && P.Value == 0 && P.BoxNo==item.BoxNo).Select(P => P.XIndex).ToList();
+            //getAdjacentColumns = data.Where(P => P.XIndex == item.XIndex && getAdjacentColumns.Contains(P.YIndex) && P.Value == 0 && P.BoxNo==item.BoxNo).Select(P => P.YIndex).ToList();
+            //getAdjacentRows = data.Where(P => P.YIndex == item.YIndex && getAdjacentRows.Contains(P.XIndex) && P.Value == 0 && P.BoxNo==item.BoxNo).Select(P => P.XIndex).ToList();
 
             for (int i = 0; i < getAdjacentRows.Count; i++)
             {
